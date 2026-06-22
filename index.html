@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sistem Pendukung Keputusan Pemilihan Jenis Jeruk Terbaik</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="top-header">
+    <div class="brand">
+      <div class="brand-mark">Y</div>
+      <div class="brand-text">
+        <h1>Sistem Pendukung Keputusan</h1>
+        <p>Pemilihan Jenis Jeruk Terbaik</p>
+      </div>
+    </div>
+
+    <div class="header-actions">
+      <button class="btn btn-outline" type="button" onclick="window.print()">🖨️ Cetak</button>
+      <button class="btn btn-dark" type="button" onclick="downloadJSON()">⬇️ Unduh JSON</button>
+    </div>
+  </header>
+
+  <nav class="nav-bar" id="navBar">
+    <button class="nav-link active" type="button" data-target="beranda">Beranda</button>
+    <button class="nav-link" type="button" data-target="jenis">Data Jenis Jeruk</button>
+    <button class="nav-link" type="button" data-target="kriteria">Kriteria Penilaian</button>
+    <button class="nav-link" type="button" data-target="aturan">Aturan Penilaian</button>
+    <button class="nav-link" type="button" data-target="alternatif">Data Alternatif</button>
+    <button class="nav-link" type="button" data-target="proses">Proses Perhitungan</button>
+    <button class="nav-link" type="button" data-target="hasil">Hasil Akhir & Peringkat</button>
+    <button class="nav-link" type="button" data-target="tentang">Tentang Sistem</button>
+  </nav>
+
+  <main class="main-shell">
+    <section class="page active" id="page-beranda">
+      <section class="hero">
+        <div class="hero-badge">🍊 Tema jeruk · modern · responsif</div>
+        <h2>Sistem Pendukung Keputusan Pemilihan Jenis Jeruk Terbaik</h2>
+        <p>
+          Aplikasi ini membantu menentukan jeruk terbaik menggunakan metode SAW
+          berdasarkan kriteria, bobot, aturan penilaian, dan nilai alternatif.
+          Menu di bagian atas mengganti halaman tanpa scrolling.
+        </p>
+        <div class="hero-actions">
+          <button class="btn btn-primary" type="button" data-target-btn="hasil">Lihat Hasil</button>
+          <button class="btn btn-secondary" type="button" data-target-btn="proses">Lihat Proses</button>
+        </div>
+      </section>
+
+      <section class="stats-grid">
+        <article class="stat-card">
+          <span class="stat-icon">🍊</span>
+          <div>
+            <h4>Jumlah Alternatif</h4>
+            <strong id="statAlternatif">15</strong>
+          </div>
+        </article>
+        <article class="stat-card">
+          <span class="stat-icon">📋</span>
+          <div>
+            <h4>Jumlah Kriteria</h4>
+            <strong id="statKriteria">4</strong>
+          </div>
+        </article>
+        <article class="stat-card">
+          <span class="stat-icon">⚖️</span>
+          <div>
+            <h4>Bobot Total</h4>
+            <strong>100%</strong>
+          </div>
+        </article>
+        <article class="stat-card">
+          <span class="stat-icon">🏆</span>
+          <div>
+            <h4>Alternatif Terbaik</h4>
+            <strong id="bestAlt">A5</strong>
+          </div>
+        </article>
+      </section>
+
+      <section class="info-grid">
+        <article class="info-card">
+          <h3>Tujuan Sistem</h3>
+          <p>
+            Sistem ini dirancang untuk membantu pemilihan jeruk terbaik secara objektif,
+            terukur, dan mudah dipahami.
+          </p>
+        </article>
+        <article class="info-card">
+          <h3>Ringkasan</h3>
+          <p>
+            Saat menu diklik, konten berganti tanpa scroll. Setiap halaman berisi data,
+            proses, dan hasil yang tersusun rapi.
+          </p>
+        </article>
+      </section>
+    </section>
+
+    <section class="page" id="page-jenis">
+      <section class="panel">
+        <div class="panel-head">
+          <div>
+            <h3>Data Jenis Jeruk</h3>
+            <p>Daftar 15 alternatif yang digunakan dalam sistem.</p>
+          </div>
+        </div>
+
+        <div class="table-wrap">
+          <table id="tableJenis">
+            <thead>
+              <tr>
+                <th data-sort="text">Kode</th>
+                <th data-sort="text">Nama Jenis Jeruk</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </section>
+    </section>
+
+    <section class="page" id="page-kriteria">
+      <section class="panel">
+        <div class="panel-head">
+          <div>
+            <h3>Kriteria Penilaian</h3>
+            <p>Seluruh kriteria, bobot, dan jenis penilaian.</p>
+          </div>
+        </div>
+
+        <div class="table-wrap">
+          <table id="tableKriteria">
+            <thead>
+              <tr>
+                <th data-sort="text">Kode</th>
+                <th data-sort="text">Kriteria</th>
+                <th data-sort="num">Bobot</th>
+                <th data-sort="text">Jenis</th>
+                <th data-sort="text">Keterangan</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </section>
+    </section>
+
+    <section class="page" id="page-aturan">
+      <section class="panel">
+        <div class="panel-head">
+          <div>
+            <h3>Aturan Penilaian</h3>
+            <p>Konversi skor 1–5 untuk setiap kriteria.</p>
+          </div>
+        </div>
+
+        <div class="rule-grid">
+          <article class="rule-card">
+            <h4>C1 - Berat Buah</h4>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Kondisi</th><th>Keterangan</th><th>Skor</th></tr></thead>
+                <tbody>
+                  <tr><td>&lt; 100 gr</td><td>Sangat kurang</td><td>1</td></tr>
+                  <tr><td>100 - 150 gr</td><td>Kurang</td><td>2</td></tr>
+                  <tr><td>151 - 200 gr</td><td>Cukup</td><td>3</td></tr>
+                  <tr><td>201 - 250 gr</td><td>Baik</td><td>4</td></tr>
+                  <tr><td>&gt; 250 gr</td><td>Sangat baik</td><td>5</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </article>
+
+          <article class="rule-card">
+            <h4>C2 - Tingkat Kemanisan</h4>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Kondisi</th><th>Keterangan</th><th>Skor</th></tr></thead>
+                <tbody>
+                  <tr><td>&lt; 8 °Brix</td><td>Sangat kurang</td><td>1</td></tr>
+                  <tr><td>8 - 10 °Brix</td><td>Kurang</td><td>2</td></tr>
+                  <tr><td>11 - 13 °Brix</td><td>Cukup</td><td>3</td></tr>
+                  <tr><td>14 - 16 °Brix</td><td>Baik</td><td>4</td></tr>
+                  <tr><td>&gt; 16 °Brix</td><td>Sangat baik</td><td>5</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </article>
+
+          <article class="rule-card">
+            <h4>C3 - Ketahanan Penyimpanan</h4>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Kondisi</th><th>Keterangan</th><th>Skor</th></tr></thead>
+                <tbody>
+                  <tr><td>&lt; 10 hari</td><td>Sangat kurang</td><td>1</td></tr>
+                  <tr><td>10 - 15 hari</td><td>Kurang</td><td>2</td></tr>
+                  <tr><td>16 - 20 hari</td><td>Cukup</td><td>3</td></tr>
+                  <tr><td>21 - 25 hari</td><td>Baik</td><td>4</td></tr>
+                  <tr><td>&gt; 25 hari</td><td>Sangat baik</td><td>5</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </article>
+
+          <article class="rule-card">
+            <h4>C4 - Harga Bibit</h4>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Kondisi</th><th>Keterangan</th><th>Skor</th></tr></thead>
+                <tbody>
+                  <tr><td>&gt; Rp50.000</td><td>Sangat mahal</td><td>1</td></tr>
+                  <tr><td>Rp40.000 - Rp50.000</td><td>Mahal</td><td>2</td></tr>
+                  <tr><td>Rp30.000 - Rp39.999</td><td>Sedang</td><td>3</td></tr>
+                  <tr><td>Rp20.000 - Rp29.999</td><td>Murah</td><td>4</td></tr>
+                  <tr><td>&lt; Rp20.000</td><td>Sangat murah</td><td>5</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </article>
+        </div>
+      </section>
+    </section>
+
+    <section class="page" id="page-alternatif">
+      <section class="panel">
+        <div class="panel-head">
+          <div>
+            <h3>Data Alternatif</h3>
+            <p>Nilai asli 15 alternatif pada 4 kriteria.</p>
+          </div>
+          <div class="toolbar">
+            <input class="search" id="searchAlternatif" type="search" placeholder="Cari alternatif..." />
+          </div>
+        </div>
+
+        <div class="table-wrap">
+          <table id="tableAlternatif">
+            <thead>
+              <tr>
+                <th data-sort="text">Kode</th>
+                <th data-sort="text">Nama Alternatif</th>
+                <th data-sort="num">C1</th>
+                <th data-sort="num">C2</th>
+                <th data-sort="num">C3</th>
+                <th data-sort="num">C4</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </section>
+    </section>
+
+    <section class="page" id="page-proses">
+      <section class="panel">
+        <div class="panel-head">
+          <div>
+            <h3>Proses Perhitungan SAW</h3>
+            <p>Matriks keputusan, normalisasi, bobot, dan nilai akhir.</p>
+          </div>
+          <div class="toolbar">
+            <button class="btn btn-outline" type="button" onclick="renderAll()">🔄 Hitung Ulang</button>
+          </div>
+        </div>
+
+        <div class="process-grid">
+          <article class="proc-card">
+            <h4>Rumus SAW</h4>
+            <div class="formula">
+              r<sub>ij</sub> = x<sub>ij</sub> / max(x<sub>ij</sub>) untuk Benefit<br>
+              r<sub>ij</sub> = min(x<sub>ij</sub>) / x<sub>ij</sub> untuk Cost<br><br>
+              V<sub>i</sub> = Σ (w<sub>j</sub> × r<sub>ij</sub>)
+            </div>
+          </article>
+
+          <article class="proc-card">
+            <h4>Penjelasan</h4>
+            <ul class="list">
+              <li><b>Matriks keputusan awal</b> berisi nilai asli alternatif.</li>
+              <li><b>Normalisasi</b> menyamakan skala agar dapat dibandingkan.</li>
+              <li><b>Bobot kriteria</b> menunjukkan tingkat kepentingan tiap kriteria.</li>
+              <li><b>Nilai akhir</b> diperoleh dari bobot × normalisasi.</li>
+            </ul>
+          </article>
+        </div>
+
+        <div class="stack-grid">
+          <article class="proc-card">
+            <h4>Matriks Keputusan Awal</h4>
+            <div class="table-wrap">
+              <table id="tableMatriksAwal">
+                <thead>
+                  <tr>
+                    <th>Kode</th>
+                    <th>Nama</th>
+                    <th>C1</th>
+                    <th>C2</th>
+                    <th>C3</th>
+                    <th>C4</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </article>
+
+          <article class="proc-card">
+            <h4>Matriks Normalisasi</h4>
+            <div class="table-wrap">
+              <table id="tableNormalisasi">
+                <thead>
+                  <tr>
+                    <th>Kode</th>
+                    <th>Nama</th>
+                    <th>C1</th>
+                    <th>C2</th>
+                    <th>C3</th>
+                    <th>C4</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </article>
+
+          <article class="proc-card">
+            <h4>Perhitungan Nilai Akhir</h4>
+            <div class="table-wrap">
+              <table id="tableNilaiAkhir">
+                <thead>
+                  <tr>
+                    <th>Kode</th>
+                    <th>Nama</th>
+                    <th>Nilai Preferensi</th>
+                    <th>Keterangan</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </article>
+        </div>
+      </section>
+    </section>
+
+    <section class="page" id="page-hasil">
+      <section class="panel">
+        <div class="panel-head">
+          <div>
+            <h3>Hasil Akhir & Peringkat</h3>
+            <p>Urutan dari nilai tertinggi hingga terendah.</p>
+          </div>
+          <div class="toolbar">
+            <button class="btn btn-outline" type="button" onclick="downloadCSV()">⬇️ Unduh CSV</button>
+          </div>
+        </div>
+
+        <div class="result-grid">
+          <article class="chart-card">
+            <h4>Grafik Perbandingan Nilai Akhir</h4>
+            <div class="bars" id="bars"></div>
+          </article>
+
+          <article class="best-card">
+            <h4>Alternatif Terbaik</h4>
+            <div class="best-box" id="bestBox"></div>
+          </article>
+        </div>
+
+        <article class="proc-card" style="margin-top:16px">
+          <h4>Tabel Peringkat</h4>
+          <div class="table-wrap">
+            <table id="tablePeringkat">
+              <thead>
+                <tr>
+                  <th>Peringkat</th>
+                  <th>Kode</th>
+                  <th>Nama</th>
+                  <th>Nilai Akhir</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </article>
+      </section>
+    </section>
+
+    <section class="page" id="page-tentang">
+      <section class="panel">
+        <div class="panel-head">
+          <div>
+            <h3>Tentang Sistem</h3>
+            <p>Informasi singkat mengenai aplikasi dan metode yang digunakan.</p>
+          </div>
+        </div>
+
+        <div class="info-grid">
+          <article class="info-card">
+            <h4>Deskripsi</h4>
+            <p>
+              Sistem ini membantu pemilihan jenis jeruk terbaik menggunakan metode SAW,
+              dengan tampilan yang modern, responsif, dan interaktif.
+            </p>
+          </article>
+
+          <article class="info-card">
+            <h4>Fitur</h4>
+            <ul class="list">
+              <li>Navigasi top bar yang ringkas</li>
+              <li>Ganti halaman tanpa scrolling</li>
+              <li>Tabel sortable dan pencarian alternatif</li>
+              <li>Grafik hasil peringkat</li>
+              <li>Cetak dan unduh data</li>
+            </ul>
+          </article>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
